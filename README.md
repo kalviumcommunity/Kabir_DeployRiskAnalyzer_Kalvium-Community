@@ -11,24 +11,41 @@ The workspace ensures that:
 
 For detailed documentation on the setup logic and agent constraints, refer to:
 
-## Setup
+## 🚀 Quick Start Guide
 
-1. Clone the repository
-   git clone <your-repository-url>
-   cd Kabir_DeployRiskAnalyzer_Kalvium-Community
+### 1. Initial Setup
+First, get the codebase and set up your isolated environment so you don't conflict with system packages.
 
-2. Create and activate a virtual environment
-   python -m venv venv
-   # Windows: venv\Scripts\activate
-   # macOS/Linux: source venv/bin/activate
+```bash
+# Clone the repository
+git clone https://github.com/kalviumcommunity/Kabir_DeployRiskAnalyzer_Kalvium-Community.git
+cd Kabir_DeployRiskAnalyzer_Kalvium-Community
 
-3. Install dependencies
-   pip install -r requirements.txt
+# Create a virtual environment
+python -m venv venv
 
-4. Configure environment variables
-   Copy .env.example to .env and fill in your credentials
+# Activate the virtual environment
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+```
 
-## Project Structure
+### 2. Install Dependencies
+Once your virtual environment `(venv)` is active, install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Environment Variables
+If your script requires secrets or database connections, configure them using the `.env` template:
+```bash
+cp .env.example .env
+# Edit .env with your specific credentials
+```
+
+## 📂 Project Structure
 
 data/raw/       Source data - never modified
 data/processed/ Cleaned data ready for analysis
@@ -36,11 +53,27 @@ notebooks/      Jupyter exploration and reporting notebooks
 scripts/        Repeatable Python scripts
 output/         Generated reports and figures
 
-## Running the Analysis
+## 🏃 Running the Analysis
 
-python scripts/clean_data.py          # Produces data/processed/
-python scripts/run_segmentation.py    # Produces output/
-jupyter notebook notebooks/           # Open interactive notebooks
+This project executes modular, production-ready Python scripts rather than relying solely on Jupyter notebooks.
+
+### Data Validation
+Before processing, you can validate your raw datasets:
+```bash
+python scripts/data_validation.py
+```
+
+### Sales Processing Pipeline
+To run the automated ingest, process, and output pipeline for sales data:
+```bash
+python scripts/sales_pipeline.py
+```
+
+**Expected Behavior:**
+1. The script reads raw data from `data/raw/sales.csv`.
+2. It cleans the data (removes duplicates, filters invalid amounts, imputes missing data).
+3. The cleaned results are written to `output/processed_sales.csv`.
+4. Execution details and any errors are logged to `logs/workflow.log`.
 
 ---
 

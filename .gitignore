@@ -28,3 +28,7 @@ dist/
 build/
 project_documentation.md
 Agents.md
+
+# Log files
+logs/
+*.log
