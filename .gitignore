@@ -26,3 +26,5 @@ output/*.pdf
 *.egg-info/
 dist/
 build/
+project_documentation.md
+Agents.md
