@@ -1,0 +1,31 @@
+project_documentation.md
+Agents.md
+
+# Virtual environment - machine-specific, never commit
+venv/
+.venv/
+ 
+# Secrets and credentials - NEVER commit these
+.env
+*.key
+*.pem
+ 
+# Python cache files - auto-generated, not useful to teammates
+__pycache__/
+*.pyc
+*.pyo
+ 
+# Jupyter notebook checkpoints - auto-saved drafts, not needed in repo
+.ipynb_checkpoints/
+ 
+# macOS system files - irrelevant to teammates on other systems
+.DS_Store
+ 
+# Large output files - regenerable from scripts
+output/*.csv
+output/*.pdf
+ 
+# Distribution and build artifacts
+*.egg-info/
+dist/
+build/
