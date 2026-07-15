@@ -1,6 +1,3 @@
-project_documentation.md
-Agents.md
-
 # Virtual environment - machine-specific, never commit
 venv/
 .venv/

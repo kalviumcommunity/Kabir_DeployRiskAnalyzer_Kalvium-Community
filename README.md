@@ -1,5 +1,18 @@
 # Kabir_DeployRiskAnalyzer_Kalvium-Community
 
+## Project Description
+This project is a Data Engineering & Analytics workspace structured for maximum reproducibility and collaboration. It follows the standard **Data Project Workspace** setup guide. 
+
+The workspace ensures that:
+- Python dependencies are strictly pinned (`requirements.txt`).
+- Code execution occurs within isolated virtual environments (`venv`).
+- Data is cleanly separated into `raw` and `processed` stages.
+- Secrets and temporary files are rigorously ignored via version control (`.gitignore`).
+
+For detailed documentation on the setup logic and agent constraints, refer to:
+- [project_documentation.md](./project_documentation.md) - Full workspace setup guide.
+- [Agents.md](./Agents.md) - Instructions and rules for AI agents operating in this workspace.
+
 ## Setup
 
 1. Clone the repository
