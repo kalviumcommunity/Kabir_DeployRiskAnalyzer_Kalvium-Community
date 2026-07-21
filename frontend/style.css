@@ -141,10 +141,17 @@ body {
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
 }
 
+.glass-card-inner {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+}
+
 /* Grid Layout */
 .main-grid {
     display: grid;
-    grid-template-columns: 420px 1fr;
+    grid-template-columns: 440px 1fr;
     gap: 24px;
 }
 
@@ -171,7 +178,7 @@ body {
 .drop-zone {
     border: 2px dashed rgba(255, 255, 255, 0.15);
     border-radius: var(--radius-md);
-    padding: 24px 16px;
+    padding: 20px 16px;
     text-align: center;
     position: relative;
     cursor: pointer;
@@ -193,7 +200,7 @@ body {
 
 .upload-icon {
     color: var(--accent-blue);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .primary-text {
@@ -233,9 +240,9 @@ body {
 
 .btn {
     font-family: var(--font-sans);
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    padding: 10px 14px;
+    padding: 9px 12px;
     border-radius: var(--radius-md);
     border: 1px solid var(--card-border);
     background: rgba(255, 255, 255, 0.04);
@@ -267,6 +274,47 @@ body {
 .btn-preset.warning:hover {
     border-color: var(--accent-amber);
     background: var(--accent-amber-glow);
+}
+
+.param-config {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.param-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.param-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.param-group label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.select-input {
+    appearance: none;
+    cursor: pointer;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.checkbox-group input {
+    cursor: pointer;
 }
 
 .code-input {
@@ -359,6 +407,58 @@ body {
     opacity: 0.85;
 }
 
+/* Audit Card */
+.audit-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.audit-card h3 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+}
+
+.audit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 0.82rem;
+}
+
+.audit-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+}
+
+.audit-label {
+    color: var(--text-muted);
+}
+
+.column-dtypes-list h4 {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.dtype-tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #bae6fd;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
 /* Checks Grid */
 .checks-grid {
     display: grid;
@@ -380,16 +480,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 8px;
-}
-
-.check-card-wide {
-    grid-column: span 2;
-}
-
-@media (max-width: 768px) {
-    .check-card-wide {
-        grid-column: span 1;
-    }
 }
 
 .check-header {
@@ -455,30 +545,13 @@ body {
     line-height: 1.4;
 }
 
-.stats-row {
-    display: flex;
-    gap: 12px;
-    margin-top: 6px;
-}
-
-.stat-pill {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 6px 12px;
-    border-radius: var(--radius-sm);
-    font-size: 0.8rem;
-}
-
-.stat-label {
-    color: var(--text-muted);
-}
-
 .hidden {
     display: none;
 }
 
 /* JSON Details */
 .json-details {
-    margin-top: 10px;
+    margin-top: 6px;
     font-size: 0.85rem;
     color: var(--text-secondary);
 }

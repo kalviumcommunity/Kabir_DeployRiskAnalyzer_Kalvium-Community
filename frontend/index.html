@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Intake & Source Validation Firewall</title>
+    <title>CSV & JSON Data Ingestion & Quality Firewall</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -22,21 +22,21 @@
                     </svg>
                 </div>
                 <div>
-                    <h1>Data Intake Firewall</h1>
-                    <p class="subtitle">Source Validation & Quality Assurance Gate</p>
+                    <h1>Data Ingestion & Quality Firewall</h1>
+                    <p class="subtitle">Explicit Multi-Format (CSV, JSON) Ingestion & Audit Reporting</p>
                 </div>
             </div>
             <div class="status-badge" id="global-status-badge">
                 <span class="pulse"></span>
-                <span id="global-status-text">Firewall Active</span>
+                <span id="global-status-text">Ingestion Pipeline Active</span>
             </div>
         </header>
 
         <!-- Main Grid Layout -->
         <main class="main-grid">
-            <!-- Left Panel: Controls & Upload -->
+            <!-- Left Panel: Controls & Ingestion Setup -->
             <section class="control-panel glass-card">
-                <h2>Data Source Input</h2>
+                <h2>Data Source Input & Parameters</h2>
                 
                 <!-- Drag & Drop Zone -->
                 <div class="drop-zone" id="drop-zone">
@@ -50,32 +50,67 @@
                             </svg>
                         </div>
                         <p class="primary-text">Drag & drop dataset here</p>
-                        <p class="secondary-text">or <span class="browse-link">browse files</span> (CSV, JSON, XLSX, Parquet)</p>
+                        <p class="secondary-text">or <span class="browse-link">browse files</span> (CSV, JSON, XLSX)</p>
                     </div>
                 </div>
 
                 <!-- Test Presets -->
                 <div class="preset-section">
-                    <label class="section-label">Quick Test Scenarios</label>
+                    <label class="section-label">Multi-Format Presets</label>
                     <div class="preset-buttons">
                         <button class="btn btn-preset active" data-sample="valid">
-                            <span class="icon">✓</span> Valid Sales CSV
+                            <span class="icon">✓</span> Standard Sales CSV
                         </button>
-                        <button class="btn btn-preset danger" data-sample="invalid_schema">
-                            <span class="icon">✕</span> Mismatched Schema
+                        <button class="btn btn-preset warning" data-sample="semicolon">
+                            <span class="icon">;</span> Semicolon CSV (`;`)
+                        </button>
+                        <button class="btn btn-preset primary" data-sample="nested_json">
+                            <span class="icon">{ }</span> Nested JSON (Flatten)
                         </button>
                         <button class="btn btn-preset warning" data-sample="latin1">
                             <span class="icon">!</span> Latin-1 Encoding
                         </button>
-                        <button class="btn btn-preset danger" data-sample="unsupported_format">
-                            <span class="icon">✕</span> Unsupported Format
+                        <button class="btn btn-preset danger" data-sample="invalid_schema">
+                            <span class="icon">✕</span> Bad Schema
                         </button>
+                        <button class="btn btn-preset danger" data-sample="unsupported_format">
+                            <span class="icon">✕</span> Unsupported
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Explicit Ingestion Parameters -->
+                <div class="param-config">
+                    <label class="section-label">Explicit Ingestion Parameters</label>
+                    <div class="param-row">
+                        <div class="param-group">
+                            <label for="delimiter-select">Delimiter:</label>
+                            <select id="delimiter-select" class="code-input select-input">
+                                <option value=",">Comma ( , )</option>
+                                <option value=";">Semicolon ( ; )</option>
+                                <option value="\t">Tab ( \t )</option>
+                                <option value="|">Pipe ( | )</option>
+                            </select>
+                        </div>
+                        <div class="param-group">
+                            <label for="encoding-select">Encoding:</label>
+                            <select id="encoding-select" class="code-input select-input">
+                                <option value="utf-8">utf-8</option>
+                                <option value="latin-1">latin-1</option>
+                                <option value="iso-8859-1">iso-8859-1</option>
+                                <option value="cp1252">cp1252</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="flatten-json-check" checked>
+                        <label for="flatten-json-check">Flatten Nested JSON (`pd.json_normalize`)</label>
                     </div>
                 </div>
 
                 <!-- Expected Schema Configuration -->
                 <div class="schema-config">
-                    <label for="schema-input" class="section-label">Expected Required Schema (Comma Separated)</label>
+                    <label for="schema-input" class="section-label">Expected Required Schema</label>
                     <textarea id="schema-input" rows="2" class="code-input">transaction_id, customer_id, transaction_date, amount</textarea>
                 </div>
 
@@ -83,14 +118,14 @@
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     </svg>
-                    Run Validation Firewall
+                    Run Ingestion & Quality Gates
                 </button>
             </section>
 
-            <!-- Right Panel: Validation Checklist Results -->
+            <!-- Right Panel: Validation Checklist & Audit Trail -->
             <section class="results-panel glass-card">
                 <div class="results-header">
-                    <h2>Validation Gates Report</h2>
+                    <h2>Ingestion Audit & Validation Report</h2>
                     <span id="report-timestamp" class="timestamp">--</span>
                 </div>
 
@@ -99,12 +134,27 @@
                     <div class="banner-status">
                         <span id="banner-icon" class="banner-icon">✓</span>
                         <div>
-                            <h3 id="banner-title">Gate Passed</h3>
-                            <p id="banner-msg">Incoming data verified safe for ingestion</p>
+                            <h3 id="banner-title">Ingestion Successful</h3>
+                            <p id="banner-msg">Incoming data ingested with explicit parameters and audited</p>
                         </div>
                     </div>
                     <div id="file-meta" class="file-meta">
                         <span id="meta-filepath">data/raw/sales.csv</span>
+                    </div>
+                </div>
+
+                <!-- Ingestion Audit Summary -->
+                <div class="audit-card glass-card-inner">
+                    <h3>Ingestion Audit Report</h3>
+                    <div class="audit-grid">
+                        <div class="audit-item"><span class="audit-label">Format / Source:</span> <strong id="audit-source">--</strong></div>
+                        <div class="audit-item"><span class="audit-label">Encoding Used:</span> <strong id="audit-encoding">--</strong></div>
+                        <div class="audit-item"><span class="audit-label">Delimiter Used:</span> <strong id="audit-delimiter">--</strong></div>
+                        <div class="audit-item"><span class="audit-label">DataFrame Shape:</span> <strong id="audit-shape">0 Rows x 0 Cols</strong></div>
+                    </div>
+                    <div class="column-dtypes-list">
+                        <h4>Column Data Types & Null Counts:</h4>
+                        <div id="dtypes-tags" class="tags-container"></div>
                     </div>
                 </div>
 
@@ -157,28 +207,11 @@
                         </div>
                         <p class="check-msg" id="msg-encoding">Detecting file character encoding & confidence...</p>
                     </div>
-
-                    <!-- Check 5: Dimensions -->
-                    <div class="check-card check-card-wide" id="card-dimensions">
-                        <div class="check-header">
-                            <div class="check-title">
-                                <span class="check-num">5</span>
-                                <h4>Dataset Baseline Dimensions</h4>
-                            </div>
-                            <span class="check-badge badge-pending" id="badge-dimensions">Pending</span>
-                        </div>
-                        <p class="check-msg" id="msg-dimensions">Capturing row count, column count, & file size...</p>
-                        <div id="stats-container" class="stats-row hidden">
-                            <div class="stat-pill"><span class="stat-label">Rows:</span> <strong id="stat-rows">0</strong></div>
-                            <div class="stat-pill"><span class="stat-label">Columns:</span> <strong id="stat-cols">0</strong></div>
-                            <div class="stat-pill"><span class="stat-label">Size:</span> <strong id="stat-size">0 MB</strong></div>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- JSON Report Toggle -->
+                <!-- JSON Inspection Report Toggle -->
                 <details class="json-details">
-                    <summary>View Raw Inspection Report (intake_report.json)</summary>
+                    <summary>View Complete JSON Ingestion & Audit Report</summary>
                     <pre><code id="json-viewer" class="json-code">{}</code></pre>
                 </details>
             </section>
