@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import logging
 import os
+import json
+from data_validation import generate_report
 
 INPUT_FILE = "data/raw/sales.csv"
 OUTPUT_FILE = "output/processed_sales.csv"
@@ -19,17 +21,15 @@ logging.basicConfig(
 
 def ingest_data(filepath):
     """
-    Read CSV file into a Pandas DataFrame.
-    
-    Args:
-        filepath (str): The relative or absolute path to the raw data file.
-        
-    Returns:
-        pd.DataFrame: The ingested dataset.
-        
-    Raises:
-        FileNotFoundError: If the specified filepath does not exist.
+    Read CSV file into a Pandas DataFrame after validating through quality firewall.
     """
+    logging.info(f"Running data validation gate on {filepath}...")
+    report = generate_report(filepath)
+    if report['status'] != 'PASSED':
+        err_msg = f"Data Quality Gate FAILED for {filepath}: {json.dumps(report['checks'])}"
+        logging.error(err_msg)
+        raise ValueError(err_msg)
+
     try:
         df = pd.read_csv(filepath)
         logging.info(f"Ingested {len(df)} rows from {filepath}")
@@ -75,7 +75,7 @@ def output_results(df, filepath):
     """
     df.to_csv(filepath, index=False)
     logging.info(f"Output saved: {filepath}")
-    print(f"✓ Processed {len(df)} records")
+    print(f"[SUCCESS] Processed {len(df)} records")
 
 if __name__ == "__main__":
     try:
@@ -87,9 +87,10 @@ if __name__ == "__main__":
         
         output_results(clean_data, OUTPUT_FILE)
         
-        print("✓ Workflow completed successfully")
+        print("[SUCCESS] Workflow completed successfully")
         
     except Exception as e:
         logging.error(f"Workflow failed: {str(e)}")
         print(f"Error: {str(e)}")
         exit(1)
+

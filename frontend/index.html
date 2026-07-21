@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Intake & Source Validation Firewall</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="shield-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="m9 12 2 2 4-4"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Data Intake Firewall</h1>
+                    <p class="subtitle">Source Validation & Quality Assurance Gate</p>
+                </div>
+            </div>
+            <div class="status-badge" id="global-status-badge">
+                <span class="pulse"></span>
+                <span id="global-status-text">Firewall Active</span>
+            </div>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <main class="main-grid">
+            <!-- Left Panel: Controls & Upload -->
+            <section class="control-panel glass-card">
+                <h2>Data Source Input</h2>
+                
+                <!-- Drag & Drop Zone -->
+                <div class="drop-zone" id="drop-zone">
+                    <input type="file" id="file-input" class="file-input" accept=".csv,.json,.xlsx,.parquet,.txt">
+                    <div class="drop-zone-content">
+                        <div class="upload-icon">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <p class="primary-text">Drag & drop dataset here</p>
+                        <p class="secondary-text">or <span class="browse-link">browse files</span> (CSV, JSON, XLSX, Parquet)</p>
+                    </div>
+                </div>
+
+                <!-- Test Presets -->
+                <div class="preset-section">
+                    <label class="section-label">Quick Test Scenarios</label>
+                    <div class="preset-buttons">
+                        <button class="btn btn-preset active" data-sample="valid">
+                            <span class="icon">✓</span> Valid Sales CSV
+                        </button>
+                        <button class="btn btn-preset danger" data-sample="invalid_schema">
+                            <span class="icon">✕</span> Mismatched Schema
+                        </button>
+                        <button class="btn btn-preset warning" data-sample="latin1">
+                            <span class="icon">!</span> Latin-1 Encoding
+                        </button>
+                        <button class="btn btn-preset danger" data-sample="unsupported_format">
+                            <span class="icon">✕</span> Unsupported Format
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Expected Schema Configuration -->
+                <div class="schema-config">
+                    <label for="schema-input" class="section-label">Expected Required Schema (Comma Separated)</label>
+                    <textarea id="schema-input" rows="2" class="code-input">transaction_id, customer_id, transaction_date, amount</textarea>
+                </div>
+
+                <button id="btn-run-validation" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Run Validation Firewall
+                </button>
+            </section>
+
+            <!-- Right Panel: Validation Checklist Results -->
+            <section class="results-panel glass-card">
+                <div class="results-header">
+                    <h2>Validation Gates Report</h2>
+                    <span id="report-timestamp" class="timestamp">--</span>
+                </div>
+
+                <!-- Summary Overview -->
+                <div id="overall-banner" class="banner banner-passed">
+                    <div class="banner-status">
+                        <span id="banner-icon" class="banner-icon">✓</span>
+                        <div>
+                            <h3 id="banner-title">Gate Passed</h3>
+                            <p id="banner-msg">Incoming data verified safe for ingestion</p>
+                        </div>
+                    </div>
+                    <div id="file-meta" class="file-meta">
+                        <span id="meta-filepath">data/raw/sales.csv</span>
+                    </div>
+                </div>
+
+                <!-- 5 Verification Check Cards -->
+                <div class="checks-grid">
+                    <!-- Check 1: Existence -->
+                    <div class="check-card" id="card-file_exists">
+                        <div class="check-header">
+                            <div class="check-title">
+                                <span class="check-num">1</span>
+                                <h4>File Existence</h4>
+                            </div>
+                            <span class="check-badge badge-pending" id="badge-file_exists">Pending</span>
+                        </div>
+                        <p class="check-msg" id="msg-file_exists">Verifying disk path & non-zero file size...</p>
+                    </div>
+
+                    <!-- Check 2: Format -->
+                    <div class="check-card" id="card-format">
+                        <div class="check-header">
+                            <div class="check-title">
+                                <span class="check-num">2</span>
+                                <h4>Format Validation</h4>
+                            </div>
+                            <span class="check-badge badge-pending" id="badge-format">Pending</span>
+                        </div>
+                        <p class="check-msg" id="msg-format">Verifying supported file extension...</p>
+                    </div>
+
+                    <!-- Check 3: Schema -->
+                    <div class="check-card" id="card-schema">
+                        <div class="check-header">
+                            <div class="check-title">
+                                <span class="check-num">3</span>
+                                <h4>Schema Integrity</h4>
+                            </div>
+                            <span class="check-badge badge-pending" id="badge-schema">Pending</span>
+                        </div>
+                        <p class="check-msg" id="msg-schema">Comparing dataset columns to required schema...</p>
+                    </div>
+
+                    <!-- Check 4: Encoding -->
+                    <div class="check-card" id="card-encoding">
+                        <div class="check-header">
+                            <div class="check-title">
+                                <span class="check-num">4</span>
+                                <h4>Encoding Detection</h4>
+                            </div>
+                            <span class="check-badge badge-pending" id="badge-encoding">Pending</span>
+                        </div>
+                        <p class="check-msg" id="msg-encoding">Detecting file character encoding & confidence...</p>
+                    </div>
+
+                    <!-- Check 5: Dimensions -->
+                    <div class="check-card check-card-wide" id="card-dimensions">
+                        <div class="check-header">
+                            <div class="check-title">
+                                <span class="check-num">5</span>
+                                <h4>Dataset Baseline Dimensions</h4>
+                            </div>
+                            <span class="check-badge badge-pending" id="badge-dimensions">Pending</span>
+                        </div>
+                        <p class="check-msg" id="msg-dimensions">Capturing row count, column count, & file size...</p>
+                        <div id="stats-container" class="stats-row hidden">
+                            <div class="stat-pill"><span class="stat-label">Rows:</span> <strong id="stat-rows">0</strong></div>
+                            <div class="stat-pill"><span class="stat-label">Columns:</span> <strong id="stat-cols">0</strong></div>
+                            <div class="stat-pill"><span class="stat-label">Size:</span> <strong id="stat-size">0 MB</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JSON Report Toggle -->
+                <details class="json-details">
+                    <summary>View Raw Inspection Report (intake_report.json)</summary>
+                    <pre><code id="json-viewer" class="json-code">{}</code></pre>
+                </details>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
