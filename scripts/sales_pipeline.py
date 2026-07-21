@@ -4,6 +4,7 @@ import logging
 import os
 import json
 from data_validation import generate_report
+from data_ingestion import ingest_dataset
 
 INPUT_FILE = "data/raw/sales.csv"
 OUTPUT_FILE = "output/processed_sales.csv"
@@ -19,9 +20,10 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-def ingest_data(filepath):
+def ingest_data(filepath, delimiter=',', encoding='utf-8'):
     """
-    Read CSV file into a Pandas DataFrame after validating through quality firewall.
+    Read CSV file into a Pandas DataFrame after validating through quality firewall
+    and using explicit ingestion parameters with audit reporting.
     """
     logging.info(f"Running data validation gate on {filepath}...")
     report = generate_report(filepath)
@@ -31,8 +33,8 @@ def ingest_data(filepath):
         raise ValueError(err_msg)
 
     try:
-        df = pd.read_csv(filepath)
-        logging.info(f"Ingested {len(df)} rows from {filepath}")
+        df, audit_rep = ingest_dataset(filepath, delimiter=delimiter, encoding=encoding)
+        logging.info(f"Ingested {len(df)} rows from {filepath} (used encoding: {audit_rep['used_encoding']}, delimiter: {audit_rep['used_delimiter']})")
         return df
     except FileNotFoundError:
         logging.error(f"File not found: {filepath}")

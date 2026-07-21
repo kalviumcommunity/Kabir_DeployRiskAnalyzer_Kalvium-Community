@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1,
+    "transaction_date": "2025-01-01",
+    "amount": 150.00,
+    "customer": {
+      "id": 101,
+      "name": "Alice Smith",
+      "location": {
+        "city": "New York",
+        "country": "USA"
+      }
+    }
+  },
+  {
+    "id": 2,
+    "transaction_date": "2025-01-02",
+    "amount": 200.50,
+    "customer": {
+      "id": 102,
+      "name": "Bob Jones",
+      "location": {
+        "city": "London",
+        "country": "UK"
+      }
+    }
+  }
+]

@@ -57,19 +57,18 @@ output/         Generated reports and figures
 
 This project executes modular, production-ready Python scripts rather than relying solely on Jupyter notebooks.
 
-### Data Validation Quality Firewall
-Before processing, incoming datasets must pass the 5-gate quality firewall (Existence, Format, Schema, Encoding, Dimensions):
+### Multi-Format CSV & JSON Ingestion
+To run explicit multi-format data ingestion (with encoding fallback, semicolon delimiter handling, nested JSON flattening, and audit report logging):
 ```bash
-python scripts/data_validation.py
+python scripts/data_ingestion.py
 ```
-Outputs validation report to `output/intake_report.json`.
 
-### Data Validation Web Dashboard & API
-To launch the interactive validation dashboard and REST API:
+### Data Ingestion & Quality Firewall Web Dashboard
+To launch the interactive multi-format ingestion dashboard and REST API:
 ```bash
 python scripts/app.py
 ```
-Then open `http://localhost:5000` in your web browser to test file uploads, custom schemas, and preset validation failure scenarios.
+Then open `http://localhost:5000` in your web browser to test file uploads, nested JSON flattening (`pd.json_normalize`), custom delimiters, and audit trail reports.
 
 ### Sales Processing Pipeline
 To run the automated ingest, process, and output pipeline for sales data (with quality firewall protection):
