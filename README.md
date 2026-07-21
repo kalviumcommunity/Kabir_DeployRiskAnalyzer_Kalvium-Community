@@ -57,14 +57,22 @@ output/         Generated reports and figures
 
 This project executes modular, production-ready Python scripts rather than relying solely on Jupyter notebooks.
 
-### Data Validation
-Before processing, you can validate your raw datasets:
+### Data Validation Quality Firewall
+Before processing, incoming datasets must pass the 5-gate quality firewall (Existence, Format, Schema, Encoding, Dimensions):
 ```bash
 python scripts/data_validation.py
 ```
+Outputs validation report to `output/intake_report.json`.
+
+### Data Validation Web Dashboard & API
+To launch the interactive validation dashboard and REST API:
+```bash
+python scripts/app.py
+```
+Then open `http://localhost:5000` in your web browser to test file uploads, custom schemas, and preset validation failure scenarios.
 
 ### Sales Processing Pipeline
-To run the automated ingest, process, and output pipeline for sales data:
+To run the automated ingest, process, and output pipeline for sales data (with quality firewall protection):
 ```bash
 python scripts/sales_pipeline.py
 ```
