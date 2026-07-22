@@ -106,6 +106,35 @@ def run_sample(sample_name):
         'ingestion': ingest_report
     })
 
+@app.route('/profile.html')
+def serve_profile():
+    return send_from_directory(app.static_folder, 'profile.html')
+
+@app.route('/api/profile', methods=['POST'])
+def run_profiling():
+    from profile_data import generate_profile_report
+    import pandas as pd
+    import json
+    
+    # Try to load existing sample or upload
+    filepath = request.form.get('filepath', 'data/raw/quality_test.csv')
+    
+    if 'file' in request.files and request.files['file'].filename != '':
+        file = request.files['file']
+        filename = file.filename
+        filepath = os.path.join(UPLOAD_DIR, filename)
+        file.save(filepath)
+    
+    if not os.path.exists(filepath):
+        return jsonify({"status": "ERROR", "message": "File not found"}), 404
+        
+    try:
+        df = pd.read_csv(filepath)
+        report = generate_profile_report(df, filepath)
+        return jsonify({"status": "SUCCESS", "report": report})
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)}), 500
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     print(f"Starting Multi-Format Data Ingestion & Firewall API on http://localhost:{port}")

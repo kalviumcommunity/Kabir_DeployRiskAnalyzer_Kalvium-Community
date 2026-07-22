@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Profiling Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-card h4 { margin: 0; color: #8892b0; font-size: 0.9rem; }
+        .stat-card .value { font-size: 1.5rem; font-weight: 700; color: #e2e8f0; margin-top: 10px; }
+        .issue-card {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .issue-card.medium {
+            background: rgba(245, 158, 11, 0.1);
+            border-left-color: #f59e0b;
+        }
+        .issue-title { font-weight: bold; margin-bottom: 5px; }
+        .issue-rec { font-size: 0.9em; color: #8892b0; margin-top: 5px; }
+        .nav-links a { color: #64ffda; text-decoration: none; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="background-glow"></div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="shield-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Data Profiling & Quality Dashboard</h1>
+                    <p class="subtitle">Compute Nulls, Duplicates, and Statistical Summaries</p>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="/">← Back to Ingestion</a>
+            </div>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <main class="main-grid">
+            <!-- Left Panel: Controls & Upload -->
+            <section class="control-panel glass-card">
+                <h2>Profile Data Source</h2>
+                
+                <div class="drop-zone" id="drop-zone-profile">
+                    <input type="file" id="file-input-profile" class="file-input" accept=".csv,.json">
+                    <div class="drop-zone-content">
+                        <div class="upload-icon">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <p class="primary-text">Drag & drop dataset to profile</p>
+                    </div>
+                </div>
+
+                <div class="param-config">
+                    <label class="section-label">Or use server file:</label>
+                    <input type="text" id="filepath-input" class="code-input" value="data/raw/quality_test.csv">
+                </div>
+
+                <button id="btn-run-profiling" class="btn btn-primary" style="margin-top: 20px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Run Data Profiler
+                </button>
+            </section>
+
+            <!-- Right Panel: Profiling Report -->
+            <section class="results-panel glass-card">
+                <div class="results-header">
+                    <h2>Profiling Report</h2>
+                    <span id="profile-timestamp" class="timestamp">--</span>
+                </div>
+
+                <div id="profile-results" style="display: none;">
+                    <div class="audit-card glass-card-inner">
+                        <h3>Dataset Overview</h3>
+                        <div class="grid-stats">
+                            <div class="stat-card">
+                                <h4>Total Records</h4>
+                                <div class="value" id="stat-records">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Total Columns</h4>
+                                <div class="value" id="stat-columns">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Duplicate %</h4>
+                                <div class="value" id="stat-dups">0%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="audit-card glass-card-inner" style="margin-top: 20px;">
+                        <h3>Quality Issues Found (<span id="issues-count">0</span>)</h3>
+                        <div id="issues-container" style="margin-top: 15px;">
+                            <!-- Issues injected here -->
+                        </div>
+                    </div>
+                    
+                    <details class="json-details" style="margin-top: 20px;">
+                        <summary>View Complete JSON Profiling Report</summary>
+                        <pre><code id="profile-json-viewer" class="json-code">{}</code></pre>
+                    </details>
+                </div>
+                
+                <div id="profile-loading" style="display: none; padding: 40px; text-align: center;">
+                    <p>Running profiling scripts...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="profile.js"></script>
+</body>
+</html>
