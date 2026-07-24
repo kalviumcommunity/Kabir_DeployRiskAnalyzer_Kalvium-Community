@@ -1,0 +1,9 @@
+customer_id,name,product_name,segment,location
+101,john,electronics,B2B,so paulo
+102,john,electronics,B2B,montral
+103,john,electronics,B2B,so paulo
+104,alice,laptops,B2B,new york
+105,alice,laptops,SMB,san jos
+106,bob,smartphones,SMB,montral
+107,carol,home appliances,Enterprise,zrich
+108,so paulo user,gaming gear,Enterprise,tokyojapan
